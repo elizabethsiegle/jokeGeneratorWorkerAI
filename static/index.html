@@ -46,6 +46,20 @@
         color: #333;
         margin-bottom: 20px;
     }
+    h2 {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+    }
+
+    h2 a {
+        color: #007BFF;
+        text-decoration: none;
+    }
+
+    h2 a:hover {
+        text-decoration: underline;
+    }
 
     form {
         display: flex;
@@ -115,21 +129,33 @@
 <body>
     <div class="container">
         <h1>Get a Personalized Joke for International Joke Day!</h1>
+        <h2>Learn about the LLMs used in this app and explore more models hosted on Cloudflare <a href="https://developers.cloudflare.com/workers-ai/models/#text-generation" target="_blank">here</a>!</h2>
         <form id="jokeForm">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
-            <label for="fruit">Favorite Fruit:</label>
-            <input type="text" id="favoriteFruit" name="favoriteFruit" required>
-            <label for="favoriteColor">Favorite Color:</label>
-            <input type="text" id="favoriteColor" name="favoriteColor" required>
+            <label for="describeYourself">Describe yourself</label>
+            <input type="text" id="describeYourself" name="describeYourself" required>
             <label for="random">Anything else you'd like the LLM to know?</label>
-            <input type="text" id="random" name="random" required>
+            <input type="text" id="random" name="random">
             <label for="model">Choose a Model:</label>
             <select id="model" name="model" required>
+                <!-- <option value="@cf/fblgit/una-cybertron-7b-v2-bf16">@cf/fblgit/una-cybertron-7b-v2-bf16</option> -->
                 <option value="@cf/meta/llama-2-7b-chat-int8">@cf/meta/llama-2-7b-chat-int8</option>
                 <option value="@cf/meta/llama-2-7b-chat-fp16">@cf/meta/llama-2-7b-chat-fp16</option>
+                <option value="@cf/meta/llama-3-8b-instruct">@cf/meta/llama-3-8b-instruct</option>
+                <option value="@cf/meta/llama-3-8b-instruct-awq">@cf/meta/llama-3-8b-instruct-awq</option>
                 <option value="@cf/mistral/mistral-7b-instruct-v0.1">@cf/mistral/mistral-7b-instruct-v0.1</option>
+                <option value="@hf/mistral/mistral-7b-instruct-v0.2">@hf/mistral/mistral-7b-instruct-v0.2</option>
+                <option value="@cf/mistral/mistral-7b-instruct-v0.2-lora">@cf/mistral/mistral-7b-instruct-v0.2-lora</option>
+                <option value="@cf/openchat/openchat-3.5-0106">@cf/openchat/openchat-3.5-0106</option>
+                <option value="@cf/tinyllama/tinyllama-1.1b-chat-v1.0">@cf/tinyllama/tinyllama-1.1b-chat-v1.0</option>
+                <option value="@hf/google/gemma-7b-it">@hf/google/gemma-7b-it</option>
+                <option value="@hf/nexusflow/starling-lm-7b-beta">@hf/nexusflow/starling-lm-7b-beta</option>
+                <option value="@hf/nousresearch/hermes-2-pro-mistral-7b">@hf/nousresearch/hermes-2-pro-mistral-7b</option>
                 <option value="@hf/thebloke/codellama-7b-instruct-awq">@hf/thebloke/codellama-7b-instruct-awq</option>
+                <option value="@hf/thebloke/mistral-7b-instruct-v0.1-awq">@hf/thebloke/mistral-7b-instruct-v0.1-awq</option>
+                <option value="@hf/thebloke/neural-chat-7b-v3-1-awq">@hf/thebloke/neural-chat-7b-v3-1-awq</option>
+                <option value="@hf/thebloke/openhermes-2.5-mistral-7b-awq">@hf/thebloke/openhermes-2.5-mistral-7b-awq</option>
             </select>
             <button id="generateButton" type="submit">Generate Joke</button>
         </form>
@@ -138,15 +164,14 @@
             document.getElementById('generateButton').addEventListener('click', async function(event) {
                 event.preventDefault();
                 const name = document.getElementById('name').value;
-                const favoriteFruit = document.getElementById('favoriteFruit').value;
-                const favoriteColor = document.getElementById('favoriteColor').value;
                 const random = document.getElementById('random').value;
+                const describeYourself = document.getElementById('describeYourself').value;
                 const model = document.getElementById('model').value;
-                console.log(name, favoriteFruit, favoriteColor, random, model);
+                console.log(name, random, describeYourself, model);
                 const response = await fetch('/joke', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, favoriteFruit, favoriteColor, random, model })
+                    body: JSON.stringify({ name, random, describeYourself, model })
                 });
 
                 const res = await response.json();

@@ -8,15 +8,15 @@ export default {
                 headers: { 'Content-Type': 'text/html' },
             });
         } else if (request.method === 'POST' && url.pathname === '/joke') {
-            const { name, favoriteFruit, favoriteColor, random, model } = await request.json();
+            const { name, describeYourself, random, model } = await request.json();
             const messages = [
 				{ role: "system", content: "You are a comedian with their own Netflix special. You sell out venues around the world for your comedy." },
 				{
 				  role: "user",
-				  content: `Return nothing else besides a joke for someone named ${name}. The joke could be about their favorite color (${favoriteColor}) or their favorite fruit (${favoriteFruit}). They also say ${random}. Remember, only return a joke and nothing else.`,
+				  content: `Return nothing else besides a joke for ${name}. They say ${random} and describe themselves as ${describeYourself}. Return a joke and nothing else, no preamble.`,
 				},
 			  ];
-			console.log(name, favoriteColor, favoriteFruit, random, model);
+			console.log(name, random, model);
             const response = await env.AI.run(
                 model,
                 { messages }
