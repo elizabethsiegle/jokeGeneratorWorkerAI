@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate a Joke</title>
+    <style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #ffcc33, #ff66cc, #66ccff);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .container {
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 100%;
+        max-width: 400px;
+        margin-bottom: 40px;
+    }
+
+    h1 {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    label {
+        margin-top: 15px;
+        font-size: 16px;
+        color: #555;
+    }
+
+    input {
+        margin-top: 8px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 100%;
+        font-size: 14px;
+        color: #333;
+    }
+
+    button {
+        margin-top: 25px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007BFF;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    #jokeContainer {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #333;
+    }
+
+    footer {
+        text-align: center;
+        font-size: 14px;
+        color: #888;
+        padding: 10px 0;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    footer a {
+        color: #007BFF;
+        text-decoration: none;
+    }
+
+    footer a:hover {
+        text-decoration: underline;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Get a Personalized Joke</h1>
+        <form id="jokeForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="fruit">Favorite Fruit:</label>
+            <input type="text" id="favoriteFruit" name="favoriteFruit" required>
+            <label for="favoriteColor">Favorite Color:</label>
+            <input type="text" id="favoriteColor" name="favoriteColor" required>
+            <label for="random">Anything else you'd like the LLM to know?</label>
+            <input type="text" id="random" name="random" required>
+            <label for="model">Choose a Model:</label>
+            <select id="model" name="model" required>
+                <option value="@cf/meta/llama-2-7b-chat-int8">@cf/meta/llama-2-7b-chat-int8</option>
+                <option value="@cf/meta/llama-2-7b-chat-fp16">@cf/meta/llama-2-7b-chat-fp16</option>
+                <option value="@cf/mistral/mistral-7b-instruct-v0.1">@cf/mistral/mistral-7b-instruct-v0.1</option>
+                <option value="@hf/thebloke/codellama-7b-instruct-awq">@hf/thebloke/codellama-7b-instruct-awq</option>
+            </select>
+            <button id="generateButton" type="submit">Generate Joke</button>
+        </form>
+        <div id="jokeContainer"></div>
+        <script>
+            document.getElementById('generateButton').addEventListener('click', async function(event) {
+                event.preventDefault();
+                const name = document.getElementById('name').value;
+                const favoriteFruit = document.getElementById('favoriteFruit').value;
+                const favoriteColor = document.getElementById('favoriteColor').value;
+                const random = document.getElementById('random').value;
+                const model = document.getElementById('model').value;
+                console.log(name, favoriteFruit, favoriteColor, random, model);
+                const response = await fetch('/joke', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, favoriteFruit, favoriteColor, random, model })
+                });
+
+                const res = await response.json();
+                const joke = res.response ?? "No joke found.";
+                document.getElementById('jokeContainer').innerText = joke;
+            });
+        </script>
+    </div>
+    <footer>
+        <p>Built w/ 🧡 in SF🌁 on <a href="https://workers.cloudflare.com/" target="_blank">Cloudflare Workers</a> with <a href="https://ai.cloudflare.com" target="_blank">Workers AI</a>👩🏻‍💻 ➡️ <a href="https://github.com/elizabethsiegle/cfworkers-ai-translate" target="_blank">code</a></p>
+    </footer>
+</body>
+</html>
+
