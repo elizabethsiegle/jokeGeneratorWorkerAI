@@ -10,10 +10,10 @@ export default {
         } else if (request.method === 'POST' && url.pathname === '/joke') {
             const { name, favoriteFruit, favoriteColor, random, model } = await request.json();
             const messages = [
-				{ role: "system", content: "You are a friendly assistant" },
+				{ role: "system", content: "You are a comedian with their own Netflix special. You sell out venues around the world for your comedy." },
 				{
 				  role: "user",
-				  content: `Return nothing else besides a joke for someone named ${name} whose favorite color is ${favoriteColor} and favorite fruit is ${favoriteFruit}. They also say ${random}.`,
+				  content: `Return nothing else besides a joke for someone named ${name}. The joke could be about their favorite color (${favoriteColor}) or their favorite fruit (${favoriteFruit}). They also say ${random}. Remember, only return a joke and nothing else.`,
 				},
 			  ];
 			console.log(name, favoriteColor, favoriteFruit, random, model);
