@@ -98,6 +98,24 @@
     button:hover {
         background-color: #0056b3;
     }
+    .spinner {
+        margin-top: 20px;
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #007BFF;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .hidden {
+        display: none;
+    }
 
     #jokeContainer {
         margin-top: 20px;
@@ -137,9 +155,11 @@
             <input type="text" id="describeYourself" name="describeYourself" required>
             <label for="random">Anything else you'd like the LLM to know?</label>
             <input type="text" id="random" name="random">
+            <label for="nsfw">NSFW Level:</label>
+            <input type="range" id="nsfw" name="nsfw" min="0" max="5" value="0" oninput="document.getElementById('nsfwValue').textContent = this.value">
+            <span id="nsfwValue">0</span>
             <label for="model">Choose a Model:</label>
             <select id="model" name="model" required>
-                <!-- <option value="@cf/fblgit/una-cybertron-7b-v2-bf16">@cf/fblgit/una-cybertron-7b-v2-bf16</option> -->
                 <option value="@cf/meta/llama-2-7b-chat-int8">@cf/meta/llama-2-7b-chat-int8</option>
                 <option value="@cf/meta/llama-2-7b-chat-fp16">@cf/meta/llama-2-7b-chat-fp16</option>
                 <option value="@cf/meta/llama-3-8b-instruct">@cf/meta/llama-3-8b-instruct</option>
@@ -159,6 +179,7 @@
             </select>
             <button id="generateButton" type="submit">Generate Joke</button>
         </form>
+        <div id="spinnerContainer" class="spinner hidden"></div>
         <div id="jokeContainer"></div>
         <script>
             document.getElementById('generateButton').addEventListener('click', async function(event) {
@@ -166,17 +187,24 @@
                 const name = document.getElementById('name').value;
                 const random = document.getElementById('random').value;
                 const describeYourself = document.getElementById('describeYourself').value;
+                const nsfw = document.getElementById('nsfw').value;
                 const model = document.getElementById('model').value;
-                console.log(name, random, describeYourself, model);
+                console.log(name, random, describeYourself, model, nsfw);
+
+                // Show spinner and hide joke container
+                document.getElementById('spinnerContainer').classList.remove('hidden');
+                document.getElementById('jokeContainer').innerText = '';
                 const response = await fetch('/joke', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, random, describeYourself, model })
+                    body: JSON.stringify({ name, random, describeYourself, nsfw, model })
                 });
 
                 const res = await response.json();
                 const joke = res.response ?? "No joke found.";
+                // Hide spinner and show joke container
                 document.getElementById('jokeContainer').innerText = joke;
+                document.getElementById('spinnerContainer').classList.add('hidden');
             });
         </script>
     </div>

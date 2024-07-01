@@ -8,12 +8,12 @@ export default {
                 headers: { 'Content-Type': 'text/html' },
             });
         } else if (request.method === 'POST' && url.pathname === '/joke') {
-            const { name, describeYourself, random, model } = await request.json();
+            const { name, describeYourself, random, nsfw, model } = await request.json();
             const messages = [
 				{ role: "system", content: "You are a comedian with their own Netflix special. You sell out venues around the world for your comedy." },
 				{
 				  role: "user",
-				  content: `Return nothing else besides a joke for ${name}. They say ${random} and describe themselves as ${describeYourself}. Return a joke and nothing else, no preamble.`,
+				  content: `Return nothing else besides a joke for ${name}. The joke should be a ${nsfw} on a raunchiness scale from 0 to 5 (5 being most raunchy). Do not mention raunchiness at all. They say ${random} and describe themselves as ${describeYourself}. Return a joke and nothing else, no preamble.`,
 				},
 			  ];
 			console.log(name, random, model);
